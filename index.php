@@ -1,6 +1,14 @@
 <?php
 
-require_once __DIR__ . '/Controller/Controller.php';
+spl_autoload_register(function ($classname){
+    $classname = str_replace('MF\\','',$classname);
+    $path = __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname).'.php';
+    if (file_exists($path)) {
+        require $path;
+        return true;
+    }
+    return false;
+});
 
 header('Content-Type: application/json');
 
