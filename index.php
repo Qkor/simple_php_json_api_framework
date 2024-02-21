@@ -23,13 +23,7 @@ try {
     $fullControllerName = "\\MF\\Controller\\" . ucfirst($path[0]);
     $controller = new $fullControllerName();
     $response = $controller->$function();
-    if(is_array($response)){
-        echo json_encode($response);
-    }
-    else{
-        http_response_code(500);
-        echo json_encode(['error' => 'internal server error']);
-    }
+    echo json_encode($response);
 } catch (Throwable $_){
     http_response_code(404);
     echo json_encode(['error' => 'wrong route']);
