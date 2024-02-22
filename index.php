@@ -16,15 +16,20 @@ $url = parse_url($_SERVER['REQUEST_URI']);
 $path = array_slice(explode('/',$url['path']),3);
 $controllerName = ucfirst($path[0]);
 $function = $path[1];
-
-try {
-    if(!ctype_alnum($controllerName) || !ctype_alnum($function))
-        throw new Exception();
+if(ctype_alnum($controllerName) && ctype_alnum($function)){
     $fullControllerName = "\\MF\\Controller\\" . ucfirst($path[0]) . "Controller";
-    $controller = new $fullControllerName();
-    $response = $controller->$function();
-    echo json_encode($response);
-} catch (Throwable){
-    http_response_code(404);
-    echo json_encode(['error' => 'wrong route']);
+    if(method_exists($fullControllerName, $function)){
+        try {
+            $controller = new $fullControllerName();
+            $response = $controller->$function();
+            echo json_encode($response);
+        } catch (Throwable) {
+            http_response_code(500);
+            echo json_encode(['error' => 'internal server error']);
+        }
+        die();
+    }
 }
+http_response_code(404);
+echo json_encode(['error' => 'wrong route']);
+
