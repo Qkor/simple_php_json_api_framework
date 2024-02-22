@@ -22,4 +22,31 @@ abstract class ControllerBase{
         http_response_code($httpCode);
         return ['error' => $errorMessage];
     }
+
+    protected function validateValue($value, $type) : bool{
+        return match ($type) {
+            'string' => is_string($value) && strlen($value),
+            'int' => is_int($value),
+            'numeric' => is_numeric($value),
+            'array' => is_array($value),
+            default => false,
+        };
+    }
+
+    protected function validateInput(array $jsonParams = [], array $queryParams = []) : void{
+        foreach($jsonParams as $param => $type){
+            if(!isset($this->input[$param]) || !$this->validateValue($this->input[$param],$type)){
+                $response = $this->errorResponse(400, $param . ' value invalid');
+                echo json_encode($response);
+                die();
+            }
+        }
+        foreach($queryParams as $param => $type){
+            if(!isset($this->params[$param]) || !$this->validateValue($this->params[$param],$type)){
+                $response = $this->errorResponse(400, $param . ' value invalid');
+                echo json_encode($response);
+                die();
+            }
+        }
+    }
 }
