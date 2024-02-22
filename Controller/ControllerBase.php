@@ -11,14 +11,15 @@ abstract class ControllerBase{
         try {
             $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
         } catch (\Exception $_) {
-            $this->errorResponse(500, 'Internal server error');
+            $response = $this->errorResponse(500, 'Internal server error');
+            echo json_encode($response);
+            die();
         }
         $this->input = json_decode(file_get_contents('php://input'), true);
         $this->params = $_GET;
     }
-    protected function errorResponse(int $httpCode, string $errorMessage): void{
+    protected function errorResponse(int $httpCode, string $errorMessage): array{
         http_response_code($httpCode);
-        echo json_encode(['error' => $errorMessage]);
-        die();
+        return ['error' => $errorMessage];
     }
 }
