@@ -24,7 +24,7 @@ try {
     $controller = new $fullControllerName();
     $response = $controller->$function();
     echo json_encode($response);
-} catch (Throwable $_){
+} catch (Throwable){
     http_response_code(404);
     echo json_encode(['error' => 'wrong route']);
 }
