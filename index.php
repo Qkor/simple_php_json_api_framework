@@ -20,7 +20,7 @@ $function = $path[1];
 try {
     if(!ctype_alnum($controllerName) || !ctype_alnum($function))
         throw new Exception();
-    $fullControllerName = "\\MF\\Controller\\" . ucfirst($path[0]);
+    $fullControllerName = "\\MF\\Controller\\" . ucfirst($path[0]) . "Controller";
     $controller = new $fullControllerName();
     $response = $controller->$function();
     echo json_encode($response);
