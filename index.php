@@ -25,7 +25,9 @@ if(ctype_alnum($controllerName) && ctype_alnum($function)){
             $controller = new $fullControllerName();
             $response = $controller->$function();
             echo json_encode($response);
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            if(Config::config['debug'])
+                echo $e->getMessage();
             http_response_code(500);
             echo json_encode(['error' => 'internal server error']);
         }
