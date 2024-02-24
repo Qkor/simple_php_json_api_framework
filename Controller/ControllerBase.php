@@ -58,7 +58,7 @@ abstract class ControllerBase{
     }
 
     /**
-     *  Validates parameters from request's json and query parameters based associative arrays,
+     *  Validates parameters from request's json and query parameters based on associative arrays,
      *  structured: ['parameter_name'=>'validator'], where 'validator' is the name of the validator from validateValue method.
      *  On validation failure prints API error response and ends the script.
      * @param array $jsonParams
