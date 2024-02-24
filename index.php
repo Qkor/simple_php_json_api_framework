@@ -1,5 +1,7 @@
 <?php
 
+use MF\Config\Config;
+
 spl_autoload_register(function ($classname){
     $classname = str_replace('MF\\','',$classname);
     $path = __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname).'.php';
@@ -13,7 +15,7 @@ spl_autoload_register(function ($classname){
 header('Content-Type: application/json');
 
 $url = parse_url($_SERVER['REQUEST_URI']);
-$path = array_slice(explode('/',$url['path']),3);
+$path = array_slice(explode('/',$url['path']),Config::config['urlPathOffset']);
 $controllerName = ucfirst($path[0]);
 $function = $path[1];
 if(ctype_alnum($controllerName) && ctype_alnum($function)){
