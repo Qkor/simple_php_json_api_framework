@@ -8,14 +8,8 @@ abstract class ControllerBase{
     protected array|null $input;
     protected array|null $params;
     public function __construct(){
-        try {
-            $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
-            $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
-        } catch (\Exception) {
-            $response = $this->errorResponse(500, 'Internal server error');
-            echo json_encode($response);
-            die();
-        }
+        $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
+        $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
         $this->input = json_decode(file_get_contents('php://input'), true);
         $this->params = $_GET;
     }
