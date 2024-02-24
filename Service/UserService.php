@@ -1,8 +1,8 @@
 <?php
 
-namespace MF\Service;
+namespace Qkor\Service;
 
-use MF\Entity\User;
+use Qkor\Entity\User;
 
 class UserService extends ServiceBase {
     public function addUser($username, $password) : false|string {
@@ -14,7 +14,7 @@ class UserService extends ServiceBase {
     public function getUserByUsername($username) : false|User {
         $query = $this->db->prepare("SELECT id, username FROM user WHERE username=?");
         if($query->execute([$username])){
-            $query->setFetchMode(\PDO::FETCH_CLASS, 'MF\Entity\User');
+            $query->setFetchMode(\PDO::FETCH_CLASS, 'Qkor\Entity\User');
             return $query->fetch();
         }
         return false;

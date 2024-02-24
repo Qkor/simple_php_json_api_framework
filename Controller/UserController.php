@@ -1,7 +1,7 @@
 <?php
 
-namespace MF\Controller;
-use MF\Service\UserService;
+namespace Qkor\Controller;
+use Qkor\Service\UserService;
 
 class UserController extends ControllerBase {
     protected UserService $userService;

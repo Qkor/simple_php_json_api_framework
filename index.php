@@ -1,9 +1,9 @@
 <?php
 
-use MF\Config\Config;
+use Qkor\Config\Config;
 
 spl_autoload_register(function ($classname){
-    $classname = str_replace('MF\\','',$classname);
+    $classname = str_replace('Qkor\\','',$classname);
     $path = __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname).'.php';
     if (file_exists($path)) {
         require $path;
@@ -19,7 +19,7 @@ $path = array_slice(explode('/',$url['path']),Config::config['urlPathOffset']);
 $controllerName = ucfirst($path[0]);
 $function = $path[1];
 if(ctype_alnum($controllerName) && ctype_alnum($function)){
-    $fullControllerName = "\\MF\\Controller\\" . ucfirst($path[0]) . "Controller";
+    $fullControllerName = "\\Qkor\\Controller\\" . ucfirst($path[0]) . "Controller";
     if(method_exists($fullControllerName, $function)){
         try {
             $controller = new $fullControllerName();

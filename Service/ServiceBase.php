@@ -1,6 +1,6 @@
 <?php
 
-namespace MF\Service;
+namespace Qkor\Service;
 
 abstract class ServiceBase{
     protected \PDO $db;

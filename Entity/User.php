@@ -1,6 +1,6 @@
 <?php
 
-namespace MF\Entity;
+namespace Qkor\Entity;
 
 class User extends EntityBase{
     protected int $id;

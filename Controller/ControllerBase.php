@@ -1,7 +1,7 @@
 <?php
 
-namespace MF\Controller;
-use MF\Config\Config;
+namespace Qkor\Controller;
+use Qkor\Config\Config;
 
 abstract class ControllerBase{
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace MF\Entity;
+namespace Qkor\Entity;
 
 abstract class EntityBase{
 
