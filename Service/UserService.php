@@ -11,14 +11,6 @@ class UserService extends ServiceBase {
             return $this->db->lastInsertId();
         return false;
     }
-    public function getUser($id) : false|User {
-        $query = $this->db->prepare("SELECT id, username FROM user WHERE id=?");
-        if($query->execute([$id])){
-            $query->setFetchMode(\PDO::FETCH_CLASS, 'MF\Entity\User');
-            return $query->fetch();
-        }
-        return false;
-    }
     public function getUserByUsername($username) : false|User {
         $query = $this->db->prepare("SELECT id, username FROM user WHERE username=?");
         if($query->execute([$username])){
