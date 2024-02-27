@@ -14,10 +14,10 @@ class UserController extends ControllerBase {
         $username = $this->input['username'];
         $password = password_hash($this->input['password'], PASSWORD_DEFAULT);
         if($this->userService->getUserByUsername($username))
-            return $this->errorResponse(400, 'user with this username already exists');
+            return $this->errorResponse(1,'user with this username already exists');
         if($this->userService->addUser($username, $password))
             return ['success' => true];
-        return $this->errorResponse(400, 'could not create a user');
+        return $this->errorResponse(1, 'could not create a user');
     }
 
 }

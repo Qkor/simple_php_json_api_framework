@@ -3,6 +3,7 @@
 namespace Qkor\Controller;
 use Exception;
 use Qkor\Config\Config;
+use Qkor\Error\ErrorHandler;
 
 abstract class ControllerBase{
     /**
@@ -31,14 +32,13 @@ abstract class ControllerBase{
     }
 
     /**
-     * Returns API error response as an associative array
-     * @param int $httpCode
-     * @param string $errorMessage
-     * @return string[]
+     * Returns API error response
+     * @param int $errorId id of the error in Qkor\Error\ErrorHandler.php
+     * @param string|null $errorMessage optional custom message
+     * @return array
      */
-    protected function errorResponse(int $httpCode, string $errorMessage): array{
-        http_response_code($httpCode);
-        return ['error' => $errorMessage];
+    protected function errorResponse(int $errorId = 0, string $errorMessage = null): array{
+        return ErrorHandler::getErrorResponse($errorId, $errorMessage);
     }
 
     /**

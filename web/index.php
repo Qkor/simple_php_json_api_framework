@@ -1,6 +1,7 @@
 <?php
 
 use Qkor\Config\Config;
+use Qkor\Error\ErrorHandler;
 
 spl_autoload_register(function ($classname){
     $classname = str_replace('Qkor\\','',$classname);
@@ -28,19 +29,15 @@ if(count($path)>=2){
                 echo json_encode($response);
             } catch (Throwable $e) {
                 if($e->getCode() == 1){
-                    http_response_code(400);
-                    echo json_encode(['error' => $e->getMessage()]);
+                    echo json_encode(ErrorHandler::getErrorResponse(1, $e->getMessage()));
                 } else {
                     if(Config::config['debug'])
                         echo $e->getMessage();
-                    http_response_code(500);
-                    echo json_encode(['error' => 'internal server error']);
+                    echo json_encode(ErrorHandler::getServerErrorResponse());
                 }
             }
             die();
         }
     }
 }
-http_response_code(404);
-echo json_encode(['error' => 'wrong route']);
-
+echo json_encode(ErrorHandler::getRouteErrorResponse());
