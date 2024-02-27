@@ -11,9 +11,11 @@ class ErrorHandler{
 
     /**
      * Sets http response code to 400 and returns error response as an associative array
+     * @param int $errorId id of the error in ErrorHandler's errors array
+     * @param string|null $customMessage optional custom message
      * @return string[]
      */
-    public static function getErrorResponse($errorId = 0, $customMessage = null) : array {
+    public static function getErrorResponse(int $errorId = 0, string|null $customMessage = null) : array {
         http_response_code(400);
         $response = self::$errors[$errorId] ?? self::$errors[0];
         if($customMessage && strlen($customMessage))
