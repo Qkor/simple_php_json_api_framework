@@ -6,7 +6,8 @@ use Qkor\Service\UserService;
 class UserController extends ControllerBase {
 
     protected array $routes = [
-        'registration' => 'register'
+        'registration' => 'register',
+        'login' => 'login'
     ];
     protected UserService $userService;
     public function __construct(){
@@ -32,6 +33,21 @@ class UserController extends ControllerBase {
         }
         $this->db->rollBack();
         return $this->errorResponse(1, 'could not create a user');
+    }
+
+    public function login() : array {
+        $this->validateInput(['username' => 'string', 'password' => 'string']);
+        if($user = $this->userService->validateUser($this->input['username'],$this->input['password'])){
+            if($token = $this->userService->createUserSession($user->id())){
+                return [
+                    'uid' => $user->id(),
+                    'username' => $user->getUsername(),
+                    'token' => $token
+                ];
+            }
+            return $this->errorResponse(0);
+        }
+        return $this->errorResponse(1, 'wrong username or password');
     }
 
 }
