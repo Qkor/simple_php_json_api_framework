@@ -4,6 +4,10 @@ namespace Qkor\Controller;
 use Qkor\Service\UserService;
 
 class UserController extends ControllerBase {
+
+    protected array $routes = [
+        'registration' => 'register'
+    ];
     protected UserService $userService;
     public function __construct(){
         parent::__construct();

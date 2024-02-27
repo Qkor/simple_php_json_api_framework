@@ -6,6 +6,9 @@ use Qkor\Config\Config;
 use Qkor\Error\ErrorHandler;
 
 abstract class ControllerBase{
+
+    protected array $routes = [];
+
     /**
      * @var \PDO
      * Database connection
@@ -23,12 +26,17 @@ abstract class ControllerBase{
      * Request's query params array
      */
     protected array|null $params;
+
     public function __construct(){
         $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
         if(!Config::config['debug'])
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
         $this->input = json_decode(file_get_contents('php://input'), true);
         $this->params = $_GET;
+    }
+
+    public function getRoute($name){
+        return $this->routes[$name] ?? false;
     }
 
     /**
