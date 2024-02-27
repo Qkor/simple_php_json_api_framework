@@ -27,10 +27,15 @@ if(count($path)>=2){
                 $response = $controller->$function();
                 echo json_encode($response);
             } catch (Throwable $e) {
-                if(Config::config['debug'])
-                    echo $e->getMessage();
-                http_response_code(500);
-                echo json_encode(['error' => 'internal server error']);
+                if($e->getCode() == 1){
+                    http_response_code(400);
+                    echo json_encode(['error' => $e->getMessage()]);
+                } else {
+                    if(Config::config['debug'])
+                        echo $e->getMessage();
+                    http_response_code(500);
+                    echo json_encode(['error' => 'internal server error']);
+                }
             }
             die();
         }

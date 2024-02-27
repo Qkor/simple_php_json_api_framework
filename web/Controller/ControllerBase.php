@@ -1,6 +1,7 @@
 <?php
 
 namespace Qkor\Controller;
+use Exception;
 use Qkor\Config\Config;
 
 abstract class ControllerBase{
@@ -60,24 +61,23 @@ abstract class ControllerBase{
     /**
      *  Validates parameters from request's json and query parameters based on associative arrays,
      *  structured: ['parameter_name'=>'validator'], where 'validator' is the name of the validator from validateValue method.
-     *  On validation failure prints API error response and ends the script.
+     *  On validation failure throws exception to be caught in index.php
      * @param array $jsonParams
      * @param array $queryParams
      * @return void
+     * @throws Exception
      */
     protected function validateInput(array $jsonParams = [], array $queryParams = []) : void{
         foreach($jsonParams as $param => $type){
             if(!isset($this->input[$param]) || !$this->validateValue($this->input[$param],$type)){
-                $response = $this->errorResponse(400, $param . ' value invalid');
-                echo json_encode($response);
-                die();
+                $exceptionMessage = $param . ' value invalid';
+                throw new Exception($exceptionMessage, 1);
             }
         }
         foreach($queryParams as $param => $type){
             if(!isset($this->params[$param]) || !$this->validateValue($this->params[$param],$type)){
-                $response = $this->errorResponse(400, $param . ' value invalid');
-                echo json_encode($response);
-                die();
+                $exceptionMessage = $param . ' value invalid';
+                throw new Exception($exceptionMessage, 1);
             }
         }
     }
