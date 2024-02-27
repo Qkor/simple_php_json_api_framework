@@ -20,23 +20,21 @@ abstract class ControllerBase{
     protected \PDO $db;
 
     /**
-     * @var $input array|null
-     * Associative array from request's json
+     * @var $input array
+     * Associative array from request's json. Filled when $this->validateInput() is called.
      */
-    protected array|null $input;
+    protected array $input = [];
 
     /**
-     * @var array|null
-     * Request's query params array
+     * @var array
+     * Request's query params array. Filled when $this->validateInput() is called.
      */
-    protected array|null $params;
+    protected array $params = [];
 
     public function __construct(){
         $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
         if(!Config::config['debug'])
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
-        $this->input = json_decode(file_get_contents('php://input'), true);
-        $this->params = $_GET;
     }
 
     /**
@@ -78,6 +76,7 @@ abstract class ControllerBase{
     /**
      *  Validates parameters from request's json and query parameters based on associative arrays,
      *  structured: ['parameter_name'=>'validator'], where 'validator' is the name of the validator from validateValue method.
+     *  Sets validated parameters from json in $this->input and from query params in $this->params
      *  On validation failure throws exception to be caught in index.php
      * @param array $jsonParams
      * @param array $queryParams
@@ -85,17 +84,21 @@ abstract class ControllerBase{
      * @throws Exception
      */
     protected function validateInput(array $jsonParams = [], array $queryParams = []) : void{
+        $input = json_decode(file_get_contents('php://input'), true);
+        $params = $_GET;
         foreach($jsonParams as $param => $type){
-            if(!isset($this->input[$param]) || !$this->validateValue($this->input[$param],$type)){
+            if(!isset($input[$param]) || !$this->validateValue($input[$param],$type)){
                 $exceptionMessage = $param . ' value invalid';
                 throw new Exception($exceptionMessage, 1);
             }
+            $this->input[$param] = $input[$param];
         }
         foreach($queryParams as $param => $type){
-            if(!isset($this->params[$param]) || !$this->validateValue($this->params[$param],$type)){
+            if(!isset($params[$param]) || !$this->validateValue($params[$param],$type)){
                 $exceptionMessage = $param . ' value invalid';
                 throw new Exception($exceptionMessage, 1);
             }
+            $this->params[$param] = $params[$param];
         }
     }
 }
