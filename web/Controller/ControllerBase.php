@@ -7,6 +7,10 @@ use Qkor\Error\ErrorHandler;
 
 abstract class ControllerBase{
 
+    /**
+     * @var array
+     * Controller's routing, for mapping routes to methods. Formatted: ['route_name' => 'method_name']
+     */
     protected array $routes = [];
 
     /**
@@ -35,7 +39,12 @@ abstract class ControllerBase{
         $this->params = $_GET;
     }
 
-    public function getRoute($name){
+    /**
+     * Returns controller's method for given route name based on $routes array
+     * @param string $name
+     * @return false|string
+     */
+    public function getRoute(string $name){
         return $this->routes[$name] ?? false;
     }
 
