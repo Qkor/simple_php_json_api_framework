@@ -2,6 +2,7 @@
 
 namespace Qkor\Controller;
 use Exception;
+use PDO;
 use Qkor\Config\Config;
 use Qkor\Entity\Session;
 use Qkor\Entity\User;
@@ -17,10 +18,10 @@ abstract class ControllerBase{
     protected array $routes = [];
 
     /**
-     * @var \PDO
+     * @var PDO
      * Database connection
      */
-    protected \PDO $db;
+    protected PDO $db;
 
     /**
      * @var $input array
@@ -49,9 +50,9 @@ abstract class ControllerBase{
     protected Session|null $session = null;
 
     public function __construct(){
-        $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
+        $this->db = new PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
         if(!Config::config['debug'])
-            $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
         $this->userService = new UserService($this->db);
         if(isset($_SERVER['HTTP_TOKEN']) && $session = $this->userService->checkToken($_SERVER['HTTP_TOKEN'])){
             if($user = $this->userService->getUser($session->getUid())){
@@ -66,7 +67,7 @@ abstract class ControllerBase{
      * @param string $name
      * @return false|string
      */
-    public function getRoute(string $name){
+    public function getRoute(string $name) : false|string {
         return $this->routes[$name] ?? false;
     }
 
@@ -100,7 +101,9 @@ abstract class ControllerBase{
     /**
      *  Validates parameters from request's json and query parameters based on associative arrays,
      *  structured: ['parameter_name'=>'validator'], where 'validator' is the name of the validator from validateValue method.
+     *  Append '?' to validator name if the parameter is not required.
      *  Sets validated parameters from json in $this->input and from query params in $this->params
+     *  Not required parameters are set to null if not provided.
      *  On validation failure throws exception to be caught in index.php
      * @param array $jsonParams
      * @param array $queryParams
@@ -111,6 +114,13 @@ abstract class ControllerBase{
         $input = json_decode(file_get_contents('php://input'), true);
         $params = $_GET;
         foreach($jsonParams as $param => $type){
+            if($type[-1] == '?'){
+                if(!isset($input[$param])){
+                    $this->input[$param] = null;
+                    continue;
+                }
+                $type = substr($type,0,-1);
+            }
             if(!isset($input[$param]) || !$this->validateValue($input[$param],$type)){
                 $exceptionMessage = $param . ' value invalid';
                 throw new Exception($exceptionMessage, 1);
@@ -118,6 +128,13 @@ abstract class ControllerBase{
             $this->input[$param] = $input[$param];
         }
         foreach($queryParams as $param => $type){
+            if($type[-1] == '?'){
+                if(!isset($params[$param])){
+                    $this->params[$param] = null;
+                    continue;
+                }
+                $type = substr($type,0,-1);
+            }
             if(!isset($params[$param]) || !$this->validateValue($params[$param],$type)){
                 $exceptionMessage = $param . ' value invalid';
                 throw new Exception($exceptionMessage, 1);
