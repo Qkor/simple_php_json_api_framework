@@ -6,7 +6,7 @@ CREATE TABLE `user` (
     `updated` int(11) NOT NULL,
     `is_deleted` int(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
 
 CREATE TABLE `session` (
    `token` varchar(255) NOT NULL,
@@ -18,4 +18,4 @@ CREATE TABLE `session` (
    PRIMARY KEY (`token`),
    KEY `uid` (`uid`),
    CONSTRAINT `session_user_fk` FOREIGN KEY (`uid`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
