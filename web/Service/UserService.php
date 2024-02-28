@@ -2,6 +2,7 @@
 
 namespace Qkor\Service;
 
+use Qkor\Config\Config;
 use Qkor\Entity\Session;
 use Qkor\Entity\User;
 
@@ -34,7 +35,8 @@ class UserService extends ServiceBase {
     public function createUserSession($uid) : string|false {
         $token = bin2hex(openssl_random_pseudo_bytes(32));
         $query = $this->db->prepare("INSERT INTO session (token, uid, expires, created, updated) VALUES (?, ?, ?, ?, ?)");
-        if($query->execute([$token, $uid, time()+3600, time(), time()]))
+        $now = time();
+        if($query->execute([$token, $uid, $now+Config::config['sessionTokenValidTime'], $now, $now]))
             return $token;
         return false;
     }

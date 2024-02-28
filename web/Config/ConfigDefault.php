@@ -10,6 +10,7 @@ class Config{
         'host' => '127.0.0.1',
         'dbName' => 'qkor',
         'dbUser' => 'root',
-        'dbPass' => ''
+        'dbPass' => '',
+        'sessionTokenValidTime' => 3600 // in seconds
     ];
 }
