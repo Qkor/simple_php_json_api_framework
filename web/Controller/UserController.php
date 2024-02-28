@@ -9,11 +9,7 @@ class UserController extends ControllerBase {
         'registration' => 'register',
         'login' => 'login'
     ];
-    protected UserService $userService;
-    public function __construct(){
-        parent::__construct();
-        $this->userService = new UserService($this->db);
-    }
+
     public function register() : array {
         $this->validateInput(['username' => 'string', 'password' => 'string']);
         $username = $this->input['username'];

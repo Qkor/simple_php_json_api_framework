@@ -3,7 +3,10 @@
 namespace Qkor\Controller;
 use Exception;
 use Qkor\Config\Config;
+use Qkor\Entity\Session;
+use Qkor\Entity\User;
 use Qkor\Error\ErrorHandler;
+use Qkor\Service\UserService;
 
 abstract class ControllerBase{
 
@@ -31,10 +34,31 @@ abstract class ControllerBase{
      */
     protected array $params = [];
 
+    protected UserService $userService;
+
+    /**
+     * @var User|null
+     * Logged user entity based on session token or null when session token is invalid or not provided
+     */
+    protected User|null $user = null;
+
+    /**
+     * @var Session|null
+     * Session entity based on session token or null when session token is invalid or not provided
+     */
+    protected Session|null $session = null;
+
     public function __construct(){
         $this->db = new \PDO("mysql:host=".Config::config['host'].";dbname=".Config::config['dbName'], Config::config['dbUser'], Config::config['dbPass']);
         if(!Config::config['debug'])
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
+        $this->userService = new UserService($this->db);
+        if(isset($_SERVER['HTTP_TOKEN']) && $session = $this->userService->checkToken($_SERVER['HTTP_TOKEN'])){
+            if($user = $this->userService->getUser($session->getUid())){
+                $this->session = $session;
+                $this->user = $user;
+            }
+        }
     }
 
     /**
